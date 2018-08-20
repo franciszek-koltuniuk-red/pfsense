@@ -600,8 +600,17 @@ function filter_generate_scrubing() {
 		}
 
 		$scrubrules .= "scrub from any to <vpn_networks> max-mss {$maxmss}\n";
+
+		$scrubrules .= "scrub from <scrub_vpn_networks> to <no_scrub_lan_networks> max-mss {$maxmss} no-df fragment reassemble\n";
+
 		$scrubrules .= "scrub from <vpn_networks> to any max-mss {$maxmss}\n";
 	}
+
+	else {
+		$scrubrules .= "scrub from <scrub_vpn_networks> to <no_scrub_lan_networks> no-df fragment reassemble\n";
+	}
+	$scrubrules .= "no scrub from <no_scrub_lan_networks> to <scrub_vpn_networks>\n";
+
 	/* disable scrub option */
 	foreach ($FilterIflist as $scrubif => $scrubcfg) {
 		if (isset($scrubcfg['virtual']) || empty($scrubcfg['descr'])) {
